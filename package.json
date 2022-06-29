@@ -1,10 +1,11 @@
 {
+  "type": "module",
   "name": "projeto13-mywallet-back",
   "version": "1.0.0",
   "description": "api-mywallet",
   "main": "app.js",
   "scripts": {
-    "start": "app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "luis",
