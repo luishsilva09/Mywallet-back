@@ -3,6 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 import dotenv from "dotenv";
 import cors from "cors";
 import joi from "joi";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -27,10 +28,17 @@ app.post("/cadastro", async (req, res) => {
   try {
     const dados = req.body;
     const { error } = cadastroSchema.validate(dados, { abortEarly: false });
+
     if (error) {
       return res.sendStatus(422);
     }
-  } catch {
+    delete dados.repeat_password;
+    await db
+      .collection("usuarios")
+      .insertOne({ ...dados, password: bcrypt.hashSync(dados.password, 10) });
+    res.send("deu bom");
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 });
