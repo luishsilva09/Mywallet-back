@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { cadastro, login } from "./controllers/authController.js";
+import { entrada } from "./controllers/userController.js";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ app.use(cors());
 app.post("/cadastro", cadastro);
 app.post("/login", login);
 
-app.post("/entrada", (req, res) => {});
+app.post("/entrada", entrada);
 
 app.post("/saida", (req, res) => {});
 app.get("/extrato", (req, res) => {});

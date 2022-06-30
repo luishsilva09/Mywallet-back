@@ -42,7 +42,7 @@ export async function login(req, res) {
       await db
         .collection("sessao")
         .insertOne({ token, userId: new ObjectId(usuario._id) });
-      res.send(token);
+      res.send({ usuario, token });
     } else {
       res.status(401).send("email ou senha invalidos");
     }
