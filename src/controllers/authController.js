@@ -17,7 +17,6 @@ export async function cadastro(req, res) {
     const { error } = cadastroSchema.validate(dados, { abortEarly: false });
 
     if (error) {
-      console.log(error);
       return res.sendStatus(422);
     }
     delete dados.repeat_password;

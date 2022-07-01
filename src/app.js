@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { cadastro, login } from "./controllers/authController.js";
-import { entrada, extrato } from "./controllers/userController.js";
+import { entrada, saida, extrato } from "./controllers/userController.js";
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ app.post("/login", login);
 
 app.post("/entrada", entrada);
 
-app.post("/saida", (req, res) => {});
+app.post("/saida", saida);
 app.get("/extrato", extrato);
 
 app.listen(process.env.PORT, () => console.log("Servidor online"));
