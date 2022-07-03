@@ -42,18 +42,19 @@ export async function cadastro(req, res) {
 export async function login(req, res) {
   try {
     const { email, password } = req.body;
-    const usuario = await db.collection("usuarios").findOne({ email: email });
-    if (usuario && bcrypt.compareSync(password, usuario.password)) {
+
+    const user = await db.collection("usuarios").findOne({ email: email });
+
+    if (user && bcrypt.compareSync(password, user.password)) {
       const token = uuid();
       await db
         .collection("sessao")
-        .insertOne({ token, userId: new ObjectId(usuario._id) });
-      res.send({ usuario, token });
+        .insertOne({ token, userId: new ObjectId(user._id) });
+      res.send({ user, token });
     } else {
       res.status(401).send("email ou senha invalidos");
     }
   } catch (error) {
-    console.log(error);
     res.sendStatus(500);
   }
 }

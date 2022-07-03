@@ -1,11 +1,23 @@
-import bcrypt from "bcrypt";
 import joi from "joi";
 import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
 
+const dataSchema = joi.object({
+  data: joi.string().required(),
+  valor: joi.number().required(),
+  descricao: joi.string().trim().required(),
+  type: joi.string().valid("entrada", "saida").required(),
+});
+
 async function adicionarDado(req, res) {
   const { authorization } = req.headers;
   const { valor, descricao, type, data } = req.body;
+
+  const { error } = dataSchema.validate(req.body);
+  if (error) {
+    return res.sendStatus(401);
+  }
+
   const token = authorization?.replace("Bearer ", "");
   if (!token) {
     return res.sendStatus(401);
@@ -25,31 +37,35 @@ async function adicionarDado(req, res) {
 }
 
 export async function entrada(req, res) {
-  adicionarDado(req, res);
+  if (req.body.valor > 0) {
+    adicionarDado(req, res);
+  } else {
+    return res.status(401).send("invalido");
+  }
 }
 
 export async function saida(req, res) {
-  adicionarDado(req, res);
+  if (req.body.valor > 0) {
+    adicionarDado(req, res);
+  } else {
+    return res.status(401).send("invalido");
+  }
 }
 
 export async function extrato(req, res) {
   let total = 0;
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
-  if (!token) {
-    return res.sendStatus(401);
-  }
-
   const sessao = await db.collection("sessao").findOne({ token });
-  if (!sessao) {
+  if (!token || !sessao) {
     return res.sendStatus(401);
   }
-  const dados = await db
+  const userData = await db
     .collection("usuarios")
     .findOne({ _id: new ObjectId(sessao.userId) });
 
-  if (dados.extrato.length > 0) {
-    dados.extrato.map((e) => {
+  if (userData.extrato.length > 0) {
+    userData.extrato.map((e) => {
       if (e.type === "entrada") {
         total += e.valor;
       } else {
@@ -58,7 +74,7 @@ export async function extrato(req, res) {
     });
   }
   const extrato = {
-    dados: dados.extrato,
+    userData: userData.extrato,
     total,
   };
   res.send(extrato).status(200);
