@@ -2,7 +2,7 @@ import joi from "joi";
 import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
 
-async function adicionarDado(req, res) {
+async function addData(req, res) {
   const sessao = res.locals.sessao;
   const { data, valor, descricao, type } = res.locals.body;
   const _id = new ObjectId();
@@ -17,7 +17,7 @@ async function adicionarDado(req, res) {
 
 export async function entrada(req, res) {
   if (res.locals.body.valor > 0) {
-    adicionarDado(req, res);
+    addData(req, res);
   } else {
     return res.status(401).send("invalido");
   }
@@ -25,7 +25,7 @@ export async function entrada(req, res) {
 
 export async function saida(req, res) {
   if (res.locals.body.valor > 0) {
-    adicionarDado(req, res);
+    addData(req, res);
   } else {
     return res.status(401).send("invalido");
   }
