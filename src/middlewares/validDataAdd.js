@@ -9,7 +9,6 @@ export default async function validDataAdd(req, res, next) {
     type: joi.string().valid("entrada", "saida").required(),
   });
   const { authorization } = req.headers;
-  const { valor, descricao, type, data } = req.body;
 
   const { error } = dataSchema.validate(req.body);
   if (error) {
