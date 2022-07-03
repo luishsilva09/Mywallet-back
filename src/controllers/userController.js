@@ -2,30 +2,9 @@ import joi from "joi";
 import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
 
-const dataSchema = joi.object({
-  data: joi.string().required(),
-  valor: joi.number().required(),
-  descricao: joi.string().trim().required(),
-  type: joi.string().valid("entrada", "saida").required(),
-});
-
 async function adicionarDado(req, res) {
-  const { authorization } = req.headers;
-  const { valor, descricao, type, data } = req.body;
-
-  const { error } = dataSchema.validate(req.body);
-  if (error) {
-    return res.sendStatus(401);
-  }
-
-  const token = authorization?.replace("Bearer ", "");
-  if (!token) {
-    return res.sendStatus(401);
-  }
-  const sessao = await db.collection("sessao").findOne({ token });
-  if (!sessao) {
-    return res.sendStatus(401);
-  }
+  const sessao = res.locals.sessao;
+  const { data, valor, descricao, type } = res.locals.body;
   const _id = new ObjectId();
   const usuario = await db
     .collection("usuarios")
@@ -37,7 +16,7 @@ async function adicionarDado(req, res) {
 }
 
 export async function entrada(req, res) {
-  if (req.body.valor > 0) {
+  if (res.locals.body.valor > 0) {
     adicionarDado(req, res);
   } else {
     return res.status(401).send("invalido");
@@ -45,7 +24,7 @@ export async function entrada(req, res) {
 }
 
 export async function saida(req, res) {
-  if (req.body.valor > 0) {
+  if (res.locals.body.valor > 0) {
     adicionarDado(req, res);
   } else {
     return res.status(401).send("invalido");
