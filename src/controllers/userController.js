@@ -16,66 +16,82 @@ async function addData(req, res) {
 }
 
 export async function entrada(req, res) {
-  if (res.locals.body.valor > 0) {
-    addData(req, res);
-  } else {
-    return res.status(401).send("invalido");
+  try {
+    if (res.locals.body.valor > 0) {
+      addData(req, res);
+    } else {
+      return res.status(401).send("invalido");
+    }
+  } catch {
+    res.sendStatus(500);
   }
 }
 
 export async function saida(req, res) {
-  if (res.locals.body.valor > 0) {
-    addData(req, res);
-  } else {
-    return res.status(401).send("invalido");
+  try {
+    if (res.locals.body.valor > 0) {
+      addData(req, res);
+    } else {
+      return res.status(401).send("invalido");
+    }
+  } catch {
+    res.sendStatus(500);
   }
 }
 
 export async function extrato(req, res) {
-  let total = 0;
-  const { authorization } = req.headers;
+  try {
+    let total = 0;
+    const { authorization } = req.headers;
 
-  const token = authorization?.replace("Bearer ", "");
-  const sessao = await db.collection("sessao").findOne({ token });
-  if (!token || !sessao) {
-    return res.sendStatus(401);
-  }
-  const userData = await db
-    .collection("usuarios")
-    .findOne({ _id: new ObjectId(sessao.userId) });
+    const token = authorization?.replace("Bearer ", "");
+    const sessao = await db.collection("sessao").findOne({ token });
+    if (!token || !sessao) {
+      return res.sendStatus(401);
+    }
+    const userData = await db
+      .collection("usuarios")
+      .findOne({ _id: new ObjectId(sessao.userId) });
 
-  if (userData.extrato.length > 0) {
-    userData.extrato.map((e) => {
-      if (e.type === "entrada") {
-        total += e.valor;
-      } else {
-        total -= e.valor;
-      }
-    });
+    if (userData.extrato.length > 0) {
+      userData.extrato.map((e) => {
+        if (e.type === "entrada") {
+          total += e.valor;
+        } else {
+          total -= e.valor;
+        }
+      });
+    }
+    const extrato = {
+      userData: userData.extrato,
+      total,
+    };
+    res.send(extrato).status(200);
+  } catch {
+    res.sendStatus(500);
   }
-  const extrato = {
-    userData: userData.extrato,
-    total,
-  };
-  res.send(extrato).status(200);
 }
 
 export async function deletar(req, res) {
-  const { authorization } = req.headers;
-  const idDado = req.params.id;
+  try {
+    const { authorization } = req.headers;
+    const idDado = req.params.id;
 
-  const token = authorization?.replace("Bearer ", "");
-  const sessao = await db.collection("sessao").findOne({ token });
-  if (!token || !sessao) {
-    return res.sendStatus(401);
+    const token = authorization?.replace("Bearer ", "");
+    const sessao = await db.collection("sessao").findOne({ token });
+    if (!token || !sessao) {
+      return res.sendStatus(401);
+    }
+
+    await db
+      .collection("usuarios")
+      .updateOne(
+        { _id: new ObjectId(sessao.userId) },
+        { $pull: { extrato: { _id: new ObjectId(idDado) } } }
+      );
+
+    res.send("deletado").status(200);
+  } catch {
+    res.sendStatus(500);
   }
-
-  await db
-    .collection("usuarios")
-    .updateOne(
-      { _id: new ObjectId(sessao.userId) },
-      { $pull: { extrato: { _id: new ObjectId(idDado) } } }
-    );
-
-  res.send("deletado").status(200);
 }
