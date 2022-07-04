@@ -34,6 +34,7 @@ export async function saida(req, res) {
 export async function extrato(req, res) {
   let total = 0;
   const { authorization } = req.headers;
+
   const token = authorization?.replace("Bearer ", "");
   const sessao = await db.collection("sessao").findOne({ token });
   if (!token || !sessao) {
@@ -57,4 +58,22 @@ export async function extrato(req, res) {
     total,
   };
   res.send(extrato).status(200);
+}
+
+export async function deletar(req, res) {
+  const { authorization } = req.headers;
+  const idDado = req.params.id;
+
+  const token = authorization?.replace("Bearer ", "");
+  const sessao = await db.collection("sessao").findOne({ token });
+  if (!token || !sessao) {
+    return res.sendStatus(401);
+  }
+  const userData = await db
+    .collection("usuarios")
+    .findOne({ _id: new ObjectId(sessao.userId) });
+
+  await db.collection("usuarios").deleteOne({ _id: new ObjectId(idDado) });
+
+  res.send("deletado").status(200);
 }
