@@ -69,11 +69,13 @@ export async function deletar(req, res) {
   if (!token || !sessao) {
     return res.sendStatus(401);
   }
-  const userData = await db
-    .collection("usuarios")
-    .findOne({ _id: new ObjectId(sessao.userId) });
 
-  await db.collection("usuarios").deleteOne({ _id: new ObjectId(idDado) });
+  await db
+    .collection("usuarios")
+    .updateOne(
+      { _id: new ObjectId(sessao.userId) },
+      { $pull: { extrato: { _id: new ObjectId(idDado) } } }
+    );
 
   res.send("deletado").status(200);
 }
