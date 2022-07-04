@@ -42,13 +42,8 @@ export async function saida(req, res) {
 export async function extrato(req, res) {
   try {
     let total = 0;
-    const { authorization } = req.headers;
+    const sessao = res.locals.sessao;
 
-    const token = authorization?.replace("Bearer ", "");
-    const sessao = await db.collection("sessao").findOne({ token });
-    if (!token || !sessao) {
-      return res.sendStatus(401);
-    }
     const userData = await db
       .collection("usuarios")
       .findOne({ _id: new ObjectId(sessao.userId) });
@@ -74,14 +69,8 @@ export async function extrato(req, res) {
 
 export async function deletar(req, res) {
   try {
-    const { authorization } = req.headers;
     const idDado = req.params.id;
-
-    const token = authorization?.replace("Bearer ", "");
-    const sessao = await db.collection("sessao").findOne({ token });
-    if (!token || !sessao) {
-      return res.sendStatus(401);
-    }
+    const sessao = res.locals.sessao;
 
     await db
       .collection("usuarios")
