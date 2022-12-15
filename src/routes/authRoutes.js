@@ -3,7 +3,7 @@ import { cadastro, login } from "../controllers/authController.js";
 
 const authRoutes = express.Router();
 
-authRoutes.post("/cadastro", cadastro);
-authRoutes.post("/login", login);
+authRoutes.post("/signup", cadastro);
+authRoutes.post("/signin", login);
 
 export default authRoutes;
