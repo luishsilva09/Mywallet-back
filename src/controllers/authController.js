@@ -5,20 +5,8 @@ import { v4 as uuid } from "uuid";
 import { ObjectId } from "mongodb";
 
 export async function cadastro(req, res) {
-  const cadastroSchema = joi.object({
-    name: joi.string().trim().required(),
-    email: joi.string().email().trim().required(),
-    password: joi.string().required(),
-    repeat_password: joi.ref("password"),
-  });
-
   try {
     const userData = req.body;
-    const { error } = cadastroSchema.validate(userData, { abortEarly: false });
-
-    if (error) {
-      return res.sendStatus(422);
-    }
 
     const repeatUser = await db
       .collection("usuarios")

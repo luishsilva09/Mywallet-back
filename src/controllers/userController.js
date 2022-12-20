@@ -1,12 +1,11 @@
-import joi from "joi";
 import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
 
-async function addData(req, res) {
+async function addData(itemData, res) {
   const sessao = res.locals.sessao;
-  const { data, valor, descricao, type } = res.locals.body;
+  const { data, valor, descricao, type } = itemData;
   const _id = new ObjectId();
-  const usuario = await db
+  await db
     .collection("usuarios")
     .updateOne(
       { _id: new ObjectId(sessao.userId) },
@@ -17,20 +16,20 @@ async function addData(req, res) {
 
 export async function entrada(req, res) {
   try {
-    if (res.locals.body.valor > 0) {
-      addData(req, res);
+    if (req.body.valor > 0) {
+      addData(req.body, res);
     } else {
       return res.status(401).send("invalido");
     }
-  } catch {
+  } catch (err) {
     res.sendStatus(500);
   }
 }
 
 export async function saida(req, res) {
   try {
-    if (res.locals.body.valor > 0) {
-      addData(req, res);
+    if (req.body.valor > 0) {
+      addData(req.body, res);
     } else {
       return res.status(401).send("invalido");
     }
