@@ -10,7 +10,7 @@ import validUser from "../middlewares/validUser.js";
 
 const userRoutes = express.Router();
 
-userRoutes.post("/entrada", validDataAdd, entrada);
+userRoutes.post("/deposit", validDataAdd, entrada);
 userRoutes.post("/expense", validDataAdd, saida);
 userRoutes.get("/statement", validUser, extrato);
 userRoutes.delete("/deleteStatement/:id", validUser, deletar);
