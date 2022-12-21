@@ -2,19 +2,6 @@ import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
 import * as userService from "../service/userService.js";
 
-async function addData(itemData, res) {
-  const sessao = res.locals.sessao;
-  const { data, valor, descricao, type } = itemData;
-  const _id = new ObjectId();
-  await db
-    .collection("usuarios")
-    .updateOne(
-      { _id: new ObjectId(sessao.userId) },
-      { $push: { extrato: { _id, data, valor, descricao, type } } }
-    );
-  return res.sendStatus(201);
-}
-
 export async function entrada(req, res) {
   try {
     const result = await userService.deposit(req.body, res.locals.sessao);
@@ -28,11 +15,9 @@ export async function entrada(req, res) {
 
 export async function saida(req, res) {
   try {
-    if (req.body.valor > 0) {
-      addData(req.body, res);
-    } else {
-      return res.status(401).send("invalido");
-    }
+    const result = await userService.deposit(req.body, res.locals.sessao);
+
+    res.status(result.code).send(result.message);
   } catch {
     res.sendStatus(500);
   }
