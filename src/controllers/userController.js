@@ -1,8 +1,6 @@
-import { ObjectId } from "mongodb";
-import db from "../database/mongo.js";
 import * as userService from "../service/userService.js";
 
-export async function entrada(req, res) {
+export async function deposit(req, res) {
   try {
     const result = await userService.deposit(req.body, res.locals.sessao);
 
@@ -13,7 +11,7 @@ export async function entrada(req, res) {
   }
 }
 
-export async function saida(req, res) {
+export async function expense(req, res) {
   try {
     const result = await userService.deposit(req.body, res.locals.sessao);
 
@@ -23,7 +21,7 @@ export async function saida(req, res) {
   }
 }
 
-export async function extrato(req, res) {
+export async function statement(req, res) {
   try {
     const result = await userService.statement(res.locals.sessao);
     res.status(result.code).send(result.message);
@@ -32,7 +30,7 @@ export async function extrato(req, res) {
   }
 }
 
-export async function deletar(req, res) {
+export async function deleteItem(req, res) {
   try {
     const result = await userService.deleteItem(
       req.params.id,

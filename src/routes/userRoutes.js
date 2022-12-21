@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  entrada,
-  saida,
-  extrato,
-  deletar,
+  deposit,
+  expense,
+  statement,
+  deleteItem,
 } from "../controllers/userController.js";
 import { schemaValidate } from "../middlewares/schemaValidate.js";
 import validUser from "../middlewares/validUser.js";
@@ -15,15 +15,15 @@ userRoutes.post(
   "/deposit",
   schemaValidate(dataSchema.dataSchema),
   validUser,
-  entrada
+  deposit
 );
 userRoutes.post(
   "/expense",
   schemaValidate(dataSchema.dataSchema),
   validUser,
-  saida
+  expense
 );
-userRoutes.get("/statement", validUser, extrato);
-userRoutes.delete("/deleteStatement/:id", validUser, deletar);
+userRoutes.get("/statement", validUser, statement);
+userRoutes.delete("/deleteStatement/:id", validUser, deleteItem);
 
 export default userRoutes;
