@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
+import * as userService from "../service/userService.js";
 
 async function addData(itemData, res) {
   const sessao = res.locals.sessao;
@@ -16,12 +17,11 @@ async function addData(itemData, res) {
 
 export async function entrada(req, res) {
   try {
-    if (req.body.valor > 0) {
-      addData(req.body, res);
-    } else {
-      return res.status(401).send("invalido");
-    }
+    const result = await userService.deposit(req.body, res.locals.sessao);
+
+    res.status(result.code).send(result.message);
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 }
