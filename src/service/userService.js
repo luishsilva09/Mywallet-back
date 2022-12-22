@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import db from "../database/mongo.js";
+import { unauthorizedError } from "../utils/errorUtils.js";
 
 async function addData(itemData, sessao) {
   const { data, valor, descricao, type } = itemData;
@@ -18,7 +19,8 @@ export async function deposit(depositData, sessao) {
   if (depositData.valor > 0) {
     return addData(depositData, sessao);
   } else {
-    return { code: 401, message: "Dados invalidos" };
+    console.log("err");
+    return unauthorizedError("Dados invalidos");
   }
 }
 
