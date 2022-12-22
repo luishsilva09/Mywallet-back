@@ -19,8 +19,7 @@ export async function deposit(depositData, sessao) {
   if (depositData.valor > 0) {
     return addData(depositData, sessao);
   } else {
-    console.log("err");
-    return unauthorizedError("Dados invalidos");
+    throw unauthorizedError("Dados invalidos");
   }
 }
 
@@ -28,7 +27,7 @@ export async function expense(expenseData, sessao) {
   if (expenseData.valor > 0) {
     return addData(expenseData, sessao);
   } else {
-    return { code: 401, message: "Dados invalidos" };
+    throw unauthorizedError("Dados invalidos");
   }
 }
 

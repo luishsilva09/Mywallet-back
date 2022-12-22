@@ -2,6 +2,7 @@ import db from "../database/mongo.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import { ObjectId } from "mongodb";
+import { conflictError, unauthorizedError } from "../utils/errorUtils.js";
 
 export async function signup(userData) {
   const HASH = 10;
@@ -9,7 +10,7 @@ export async function signup(userData) {
     .collection("usuarios")
     .findOne({ email: userData.email });
 
-  if (repeatUser) return { code: 409, message: "Dados Invalidos" };
+  if (repeatUser) throw conflictError("Dados Invalidos");
 
   delete userData.repeat_password;
 
@@ -25,8 +26,8 @@ export async function signup(userData) {
 export async function singin(email, password) {
   const user = await db.collection("usuarios").findOne({ email: email });
 
-  if (!user && !bcrypt.compareSync(password, user.password)) {
-    return { code: 401, message: "email ou senha invalidos" };
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    throw unauthorizedError("email ou senha invalidos");
   }
   const token = uuid();
   await db
