@@ -47,11 +47,57 @@ Request:
     POST /signin
 ```
 
+Request:
+
+| Body       | Type     | Description                   |
+| ---------- | -------- | ----------------------------- |
+| `email`    | `string` | **Reuqired**. email from user |
+| `password` | `string` | **Reuqired**. password        |
+
+Response:
+
+```json
+{
+  "user": {
+    "_id": "63a0bf8685c777bc86fba1c1", // user id
+    "name": "luis", // user name
+    "email": "luis@gmail.com", //user email
+    "password": "$2b$10$s1iTuzA9EAvPYS5nmIhNAu2T/WBncuYqjxNc1WNUSfqPXjhN8LbZe", //user password
+    "extrato": [
+      // statement from user
+      {
+        "_id": "63a2354db442a843e70e844f",
+        "data": "20/12",
+        "valor": 55,
+        "descricao": "erg",
+        "type": "entrada"
+      }
+    ]
+  },
+  "token": "0a54d0aa-8590-480f-9d7b-1bce4316224f" // token for auth
+}
+```
+
 ### Add deposit:
 
 ```https
     POST /deposit
 ```
+
+Request:
+
+| Headers         | Type     | Description                          |
+| --------------- | -------- | ------------------------------------ |
+| `Authorization` | `string` | **Reuqired**. Bearer token from user |
+
+</br>
+
+| Body        | Type        | Description                        |
+| ----------- | ----------- | ---------------------------------- |
+| `data`      | `timeStamp` | **Reuqired**. date from now        |
+| `valor`     | `number`    | **Reuqired**. value\price          |
+| `descricao` | `string`    | **Reuqired**. description          |
+| `type`      | `string`    | **Reuqired**. "entrada" or "saida" |
 
 ### Add expense:
 
@@ -59,10 +105,55 @@ Request:
     POST /expense
 ```
 
+Request:
+
+| Headers         | Type     | Description                          |
+| --------------- | -------- | ------------------------------------ |
+| `Authorization` | `string` | **Reuqired**. Bearer token from user |
+
+</br>
+
+| Body        | Type        | Description                        |
+| ----------- | ----------- | ---------------------------------- |
+| `data`      | `timeStamp` | **Reuqired**. date from now        |
+| `valor`     | `number`    | **Reuqired**. value\price          |
+| `descricao` | `string`    | **Reuqired**. description          |
+| `type`      | `string`    | **Reuqired**. "entrada" or "saida" |
+
 ### Get statement:
 
 ```https
     GET /statement
+```
+
+Request:
+
+| Headers         | Type     | Description                          |
+| --------------- | -------- | ------------------------------------ |
+| `Authorization` | `string` | **Reuqired**. Bearer token from user |
+
+Response:
+
+```json
+{
+  "userData": [
+    {
+      "_id": "63a2354db442a843e70e844f",
+      "data": "20/12",
+      "valor": 55,
+      "descricao": "erg",
+      "type": "entrada"
+    },
+    {
+      "_id": "63a23551b442a843e70e8450",
+      "data": "20/12",
+      "valor": 554,
+      "descricao": "g",
+      "type": "saida"
+    }
+  ],
+  "total": -499 // total
+}
 ```
 
 ### Delete item:
@@ -70,6 +161,18 @@ Request:
 ```https
     delete /deleteStatement/${id}
 ```
+
+Request:
+
+| Headers         | Type     | Description                          |
+| --------------- | -------- | ------------------------------------ |
+| `Authorization` | `string` | **Reuqired**. Bearer token from user |
+
+</br>
+
+| Params | Type     | Description                |
+| ------ | -------- | -------------------------- |
+| `id`   | `string` | **Reuqired**. id from item |
 
 # Run Locally
 
