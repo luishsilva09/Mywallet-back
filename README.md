@@ -32,6 +32,15 @@ The better way to organize your finances.
     POST /signup
 ```
 
+Request:
+
+| Body             | Type     | Description                   |
+| ---------------- | -------- | ----------------------------- |
+| `name`           | `string` | **Reuqired**. user name       |
+| `email`          | `string` | **Reuqired**. email from user |
+| `password`       | `string` | **Reuqired**. password        |
+| `repeatPassword` | `string` | **Reuqired**. repeat password |
+
 ### Signin:
 
 ```https
